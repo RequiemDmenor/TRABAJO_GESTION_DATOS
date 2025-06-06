@@ -32,142 +32,72 @@
 #include <public/emu_sc_channel_drv_v1.h>
 #include <public/emu_gss_v1.h>
 
-//TODO Complete FT_UAH_PHOTSAT_SERV_129_0010
-//
-// FT_UAH_PHO TSAT_SERV_129_0010:
-//   Verifica que al enviar TC[129,1] con valores válidos (Yaw, Pitch y numImágenes),
-//   la misión genera exactamente tantas telemetrías TM[129,4] como imágenes se pidieron.
-//
+//TODO DONE Complete FT_UAH_PHOTSAT_SERV_129_0010
 
-void FT_UAH_PhotSat_SERV_129_0010(void)
-{
-    // ------------------------------------------------------------
-    // 1) Definir valores de prueba para ThetaYaw, ThetaPitch y numImages
-    // ------------------------------------------------------------
-    int16_t  ThetaYaw   =  150;    // Ejemplo: 150' de arco
-    int16_t  ThetaPitch = -120;    // Ejemplo: -120' de arco
-    uint8_t  numImages  =   4;     // Pedimos 4 imágenes
+#define FT_UAH_PHOTSAT_SERV_129_0010
 
-    // ------------------------------------------------------------
-    // 2) Construir el objeto TC[129,1] con esos parámetros
-    // ------------------------------------------------------------
-    uint32_t currentTime2YK = EmuHW_GetTimeCode();
-    EmuGSS_TCProgram129_1 tc1291(
-        currentTime2YK,
-        "FT_129_0010",   // Descripción breve
-        ThetaYaw,
-        ThetaPitch,
-        numImages
-    );
+#ifdef FT_UAH_PHOTSAT_SERV_129_0010
 
-    // ------------------------------------------------------------
-    // 3) Enviar el telemando TC[129,1]
-    // ------------------------------------------------------------
-    if (!GSS_SendTC(&tc1291)) {
-        // Si falla el envío, salimos inmediatamente
-        return;
-    }
-
-    // ------------------------------------------------------------
-    // 4) Esperar exactamente ‘numImages’ telemetrías TM[129,4]
-    // ------------------------------------------------------------
-    uint8_t       receivedCount = 0;
-    EmuGSS_TMProgram129_4 tm1294;
-    const uint32_t TIMEOUT_MS   = 2000;  // 2 segundos por cada TM[129,4]
-
-    while (receivedCount < numImages) {
-        // Bloqueante: espera una TM servicio=129, subservicio=4
-        if (!GSS_WaitForTM(129, 4, &tm1294, TIMEOUT_MS)) {
-            // Timeout o error antes de recibir la telemetría esperada
-            break;
-        }
-        // Si llegó la TM, incrementamos el contador y continuamos
-        receivedCount++;
-    }
-
-    // ------------------------------------------------------------
-    // 5) Si recibimos exactamente ‘numImages’, la prueba pasa.
-    //    En otro caso, la prueba falla (aquí simplemente salimos).
-    // ------------------------------------------------------------
-    if (receivedCount == numImages) {
-        // OK: llegaron tantas TM[129,4] como imágenes pedimos
-    }
-    else {
-        // FAIL: llegaron 'receivedCount' TM[129,4], se esperaban 'numImages'
-    }
-}
+#define FT_UAH_PHOTSAT_SERV_129_0010_step0  (OBT_AFTER_POWER_ON + 5)
 
 
+// STEP0 - Lanzamos una solicitud de observacion
+EmuGSS_TCProgram129_1 prog_FT_UAH_PHOTSAT_SERV_129_0010_step0(FT_UAH_PHOTSAT_SERV_129_0010_step0,
+    "FT_UAH_PHOTSAT_SERV_129_0010_step0, Solicita la Observacion mediante la toma de dos imagenes con yaw=15*60 y pitch 15*60", 900, 900, 2);
 
-//TODO Complete FT_UAH_PHOTSAT_SERV_129_FDIR_0020
-void FT_UAH_PhotSat_SERV_129_FDIR_0020(void)
-{
-    // ------------------------------------------------------------
-    // 1) Leer telemetría TM[19,1] inicial para comprobar PID == 0
-    // ------------------------------------------------------------
-    EmuGSS_TMProgram19_1 tm19_initial;
-    const uint32_t CTRL_TM_TIMEOUT_MS = 2000;  // 2 segundos
 
-    if (!GSS_WaitForTM(19, 1, &tm19_initial, CTRL_TM_TIMEOUT_MS)) {
-        // No llegó TM[19,1] de control inicial: falla la prueba
-        return;
-    }
-    if (tm19_initial.getThetaPitch_W_ControlPID() != 0 ||
-        tm19_initial.getThetaYaw_W_ControlPID()   != 0) {
-        // Los parámetros PID no están a 0 al inicio: falla la prueba
-        return;
-    }
+#endif
 
-    // ------------------------------------------------------------
-    // 2) Enviar TC[129,2] con Kp=0.5, Ki=0.5, Kd=0.5 para forzar exceso
-    // ------------------------------------------------------------
-    uint32_t tnow = EmuHW_GetTimeCode();
-    EmuGSS_TCProgram129_2 tc1292(
-        tnow,
-        "FT_129_FDIR_0020",  // Descripción breve
-        0.5f,  // Kp
-        0.5f,  // Ki
-        0.5f   // Kd
-    );
-    if (!GSS_SendTC(&tc1292)) {
-        // No pudo enviarse TC[129,2]: falla la prueba
-        return;
-    }
 
-    // ------------------------------------------------------------
-    // 3) Esperar que salte el evento 0x4003 dentro de un timeout
-    // ------------------------------------------------------------
-    EmuGSS_Event event4003;
-    const uint32_t EVENT_TIMEOUT_MS = 5000;  // 5 segundos
+//TODO DONE Complete FT_UAH_PHOTSAT_SERV_129_FDIR_0020
 
-    if (!GSS_WaitForEvent(0x4003, &event4003, EVENT_TIMEOUT_MS)) {
-        // No se recibió el evento 0x4003: falla la prueba
-        return;
-    }
+#define FT_UAH_PHOTSAT_SERV_129_FDIR_0020
 
-    // ------------------------------------------------------------
-    // 4) Verificar que la GSS emite automáticamente TC[129,3] (reset)
-    // ------------------------------------------------------------
-    const uint32_t TC_RESET_TIMEOUT_MS = 3000;  // 3 segundos
-    if (!GSS_WaitForSentTC(129, 3, TC_RESET_TIMEOUT_MS)) {
-        // No se envió TC[129,3] tras recibir el evento: falla la prueba
-        return;
-    }
+#ifdef FT_UAH_PHOTSAT_SERV_129_FDIR_0020
 
-    // ------------------------------------------------------------
-    // 5) Leer TM[19,1] de control otra vez y comprobar que PID vuelve a 0
-    // ------------------------------------------------------------
-    EmuGSS_TMProgram19_1 tm19_after;
-    if (!GSS_WaitForTM(19, 1, &tm19_after, CTRL_TM_TIMEOUT_MS)) {
-        // No llegó TM[19,1] post-reset: falla la prueba
-        return;
-    }
-    if (tm19_after.getThetaPitch_W_ControlPID() == 0 &&
-        tm19_after.getThetaYaw_W_ControlPID()   == 0) {
-        // OK: PID restaurado a 0 tras el reset
-    }
-    else {
-        // FAIL: PID no volvió a 0 después del reset
-    }
-}
+#define FT_UAH_PHOTSAT_SERV_129_FDIR_0020_step0  (OBT_AFTER_POWER_ON + 5)
+#define FT_UAH_PHOTSAT_SERV_129_FDIR_0020_step1  (OBT_AFTER_POWER_ON + 8)
+#define FT_UAH_PHOTSAT_SERV_129_FDIR_0020_step2  (OBT_AFTER_POWER_ON + 11)
+#define FT_UAH_PHOTSAT_SERV_129_FDIR_0020_step3  (OBT_AFTER_POWER_ON + 14)
+#define FT_UAH_PHOTSAT_SERV_129_FDIR_0020_step4  (OBT_AFTER_POWER_ON + 17)
+#define FT_UAH_PHOTSAT_SERV_129_FDIR_0020_step5  (OBT_AFTER_POWER_ON + 20)
+#define FT_UAH_PHOTSAT_SERV_129_FDIR_0020_step6  (OBT_AFTER_POWER_ON + 23)
+#define FT_UAH_PHOTSAT_SERV_129_FDIR_0020_step7  (OBT_AFTER_POWER_ON + 26)
 
+// STEP0 - Definimos el monitor PID 13
+EmuGSS_TCProgram12_5_Value_UINT8 prog_FT_UAH_PHOTSAT_SERV_129_FDIR_0020_step0(FT_UAH_PHOTSAT_SERV_129_FDIR_0020_step0,
+    "FT_UAH_PHOTSAT_SERV_129_FDIR_0020 step 0, Configurar PMODID 1 para PID 13",
+    1, 13, 2, 1, 0xFF, 0, 0X4003);
+
+// STEP1 - Definimos el monitor PID 14
+EmuGSS_TCProgram12_5_Value_UINT8 prog_FT_UAH_PHOTSAT_SERV_129_FDIR_0020_step1(FT_UAH_PHOTSAT_SERV_129_FDIR_0020_step1,
+    "FT_UAH_PHOTSAT_SERV_129_FDIR_0020 step 1, Configurar PMODID 2 para PID 14",
+    2, 14, 2, 1, 0xFF, 0, 0X4003);
+
+// STEP2 - Habilitamos el monitor del PID 13
+EmuGSS_TCProgram12_1 prog_FT_UAH_PHOTSAT_SERV_129_FDIR_0020_step2(FT_UAH_PHOTSAT_SERV_129_FDIR_0020_step2,
+    "FT_UAH_PHOTSAT_SERV_129_FDIR_0020 step 2, Habilitamps PMODID 1 para PID 13",1);
+
+// STEP3 - Habilitamos el monitor del PID 14
+EmuGSS_TCProgram12_1 prog_FT_UAH_PHOTSAT_SERV_129_FDIR_0020_step3(FT_UAH_PHOTSAT_SERV_129_FDIR_0020_step3,
+    "FT_UAH_PHOTSAT_SERV_129_FDIR_0020 step 3, Habilitamps PMODID 2 para PID 14",2);
+
+// STEP4 - Configura una acción de reinicio
+EmuGSS_TCProgram19_1_Action_129_3 prog_FT_UAH_PHOTSAT_SERV_129_FDIR_0020_step4(FT_UAH_PHOTSAT_SERV_129_FDIR_0020_step4,
+    "FT_UAH_PHOTSAT_SERV_129_FDIR_0020 step 4, Se detecta el EvID",0X4003);
+
+// STEP5 - Habilitamos dicha acción
+EmuGSS_TCProgram19_4 prog_FT_UAH_PHOTSAT_SERV_129_FDIR_0020_step5(FT_UAH_PHOTSAT_SERV_129_FDIR_0020_step5,
+    "FT_UAH_PHOTSAT_SERV_129_FDIR_0020 step 5, Habilitamos dicha acción",0X4003);
+
+// STEP6 - Determina el valor de Kp, Ki y Kd
+EmuGSS_TCProgram129_2 prog_FT_UAH_PHOTSAT_SERV_129_FDIR_0020_step6(FT_UAH_PHOTSAT_SERV_129_FDIR_0020_step6,
+    "FT_UAH_PHOTSAT_SERV_129_FDIR_0020_step6, Determina el valor de Kp=Ki=Kd=0,5", 0.5, 0.5, 0.5);
+
+// STEP7 - Solicitud nueva observacion
+EmuGSS_TCProgram129_1 prog_FT_UAH_PHOTSAT_SERV_129_FDIR_0020_step7(FT_UAH_PHOTSAT_SERV_129_FDIR_0020_step7,
+    "FT_UAH_PHOTSAT_SERV_129_FDIR_0020_step7, Solicita la Observacion mediante la toma de dos imagenes con yaw=30*60 y pitch 30*60", 1800, 1800, 2);
+
+
+
+#endif

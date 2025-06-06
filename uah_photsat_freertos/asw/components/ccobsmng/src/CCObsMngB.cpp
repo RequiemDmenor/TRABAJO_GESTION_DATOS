@@ -79,7 +79,7 @@ void	CCObsMng::EDROOM_CTX_Top_0::FEndObservation()
 {
 
 // Take absolute time reference
-VNextTimeOut.GetTime
+VNextTimeOut.GetTime;
  
 pus_service129_end_observation();
 

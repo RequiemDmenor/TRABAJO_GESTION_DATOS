@@ -33,7 +33,6 @@ EmuGSS_TCProgram129_1::EmuGSS_TCProgram129_1(uint32_t uniTime2YK,
 //TODO DONE complete EmuGSS_TCProgram129_1::BuildTCAppData code (A PARTIR DEL emu_gss_pus DEL SERVICIO 20)
 void EmuGSS_TCProgram129_1::BuildTCAppData(tc_mem_descriptor_t &tc_descriptor)
 {
-	SetNextUInt8(1);
 	SetNextInt16(mThetaYaw);
 	SetNextInt16(mThetaPitch);
 	SetNextUInt8(mnum_of_samples);
@@ -62,7 +61,6 @@ EmuGSS_TCProgram129_2::EmuGSS_TCProgram129_2(uint32_t uniTime2YK,
 //TODO DONE complete EmuGSS_TCProgram129_2::BuildTCAppData code (A PARTIR DEL emu_gss_pus DEL SERVICIO 20)
 void EmuGSS_TCProgram129_2::BuildTCAppData(tc_mem_descriptor_t &tc_descriptor)
 {
-	SetNextUInt8(1);
 	SetNextFloat(mKp);
 	SetNextFloat(mKpi);
 	SetNextFloat(mKd);
