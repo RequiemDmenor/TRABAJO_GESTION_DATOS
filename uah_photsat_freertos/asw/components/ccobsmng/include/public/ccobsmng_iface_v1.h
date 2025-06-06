@@ -201,25 +201,28 @@ public:
 
 		//!Transition Identifiers
 		enum TEDROOMTransitionID{Init,
-			Take_Image,
-			Take_Image_ToStandby,
-			Take_Image_Default,
-			DoAttitudeCtrl,
-			DoAttitudeCtrl_ToObservation,
-			DoAttitudeCtrl_Default,
 			TC_Exec,
+			Do_AttitudeCtrl,
+			Do_AttitudeCtrl_To_Observation,
+			Do_AttitudeCtrl_Default,
+			Take_Image,
+			Take_Image_To_Standby,
+			Take_Image_Default,
 			EDROOMMemoryTrans };
 
 		//!Constants
 		const Pr_Time CImageInterval;
 
 
+		//!Variables
+		Pr_Time &VNextTimeOut;
 
 
 
 
 		//!Constructor
-		EDROOM_CTX_Top_0 (CCObsMng &act );
+		EDROOM_CTX_Top_0 (CCObsMng &act,
+				Pr_Time & EDROOMpVarVNextTimeOut );
 
 		//!Copy constructor
 		EDROOM_CTX_Top_0 (EDROOM_CTX_Top_0 &context);
@@ -252,6 +255,16 @@ public:
 		/**
 		 * \brief  
 		 */
+		void	FDoActtitudeCtrl();
+
+		/**
+		 * \brief  
+		 */
+		void	FEndObservation();
+
+		/**
+		 * \brief  
+		 */
 		void	FInit_Obs();
 
 		/**
@@ -260,44 +273,34 @@ public:
 		void	FObsCtrl_exec();
 
 		/**
-		 * \brief 
+		 * \brief  
 		 */
-		void	FDoActtitudeCtrl();
+		void	FProgAttitudeCtrl();
 
 		/**
-		 * \brief 
-		 */
-		bool	GReadyToObservation();
-
-		/**
-		 * \brief 
-		 */
-		void	FToObservation();
-
-		/**
-		 * \brief 
+		 * \brief  
 		 */
 		void	FProgTakeImage();
 
 		/**
-		 * \brief 
+		 * \brief  
 		 */
 		void	FTakeImage();
 
 		/**
-		 * \brief 
+		 * \brief  
+		 */
+		void	FToObservation();
+
+		/**
+		 * \brief  
 		 */
 		bool	GLastImage();
 
 		/**
-		 * \brief 
+		 * \brief  
 		 */
-		void	FEndObservation();
-
-		/**
-		 * \brief 
-		 */
-		void	FProgAttitudeCtrl();
+		bool	GReadyToObservation();
 
 	};
 
@@ -321,6 +324,8 @@ public:
 		//!next state identifier
 		EDROOM_CTX_Top_0::TEDROOMStateID edroomNextState;
 
+		//!Variables
+		Pr_Time VNextTimeOut;
 
 
 

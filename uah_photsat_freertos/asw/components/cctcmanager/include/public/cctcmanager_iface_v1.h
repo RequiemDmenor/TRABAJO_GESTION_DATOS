@@ -252,7 +252,7 @@ public:
 			HandleTC_ToReboot,
 			HandleTC_FwdHK_FDIRTC,
 			HandleTC_FwdToBKGTCExec,
-			HandleTC_FwdTCObsMng,
+			HandleTC_FwdToObsMng,
 			HandleTC_ExecPrioTC,
 			NewEvAction,
 			EDROOMMemoryTrans };
@@ -328,7 +328,7 @@ public:
 		/**
 		 * \brief  
 		 */
-		void	FFwdtoOBSmng();
+		void	FFwdToObsMng();
 
 		/**
 		 * \brief  
@@ -373,17 +373,17 @@ public:
 		/**
 		 * \brief  
 		 */
-		bool	GFwdTcObsMng();
-
-		/**
-		 * \brief  
-		 */
 		bool	GFwdToBKGTCExec();
 
 		/**
 		 * \brief  
 		 */
 		bool	GFwdToHK_FDIR();
+
+		/**
+		 * \brief  
+		 */
+		bool	GFwdToObsMng();
 
 		/**
 		 * \brief  

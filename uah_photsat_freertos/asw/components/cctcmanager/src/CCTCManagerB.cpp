@@ -113,7 +113,7 @@ void	CCTCManager::EDROOM_CTX_Top_0::FFwdToBKGTCExec()
 
 
 
-void	CCTCManager::EDROOM_CTX_Top_0::FFwdtoOBSmng()
+void	CCTCManager::EDROOM_CTX_Top_0::FFwdToObsMng()
 
 {
    //Allocate data from pool
@@ -122,6 +122,7 @@ void	CCTCManager::EDROOM_CTX_Top_0::FFwdtoOBSmng()
 		// Complete Data 
 	
 	*pSObsMng_TC_Data= VCurrentTC;
+	
    //Send message 
    ObsCtrl.send(SObsMng_TC,pSObsMng_TC_Data,&EDROOMPoolCDTCHandler); 
 }
@@ -233,16 +234,6 @@ return VAcceptReport.IsAccepted();
 
 
 
-bool	CCTCManager::EDROOM_CTX_Top_0::GFwdTcObsMng()
-
-{
-
-return VTCExecCtrl.IsObsTC();
-
-}
-
-
-
 bool	CCTCManager::EDROOM_CTX_Top_0::GFwdToBKGTCExec()
 
 {
@@ -258,6 +249,16 @@ bool	CCTCManager::EDROOM_CTX_Top_0::GFwdToHK_FDIR()
 {
 
 return VTCExecCtrl.IsHK_FDIRTC();
+
+}
+
+
+
+bool	CCTCManager::EDROOM_CTX_Top_0::GFwdToObsMng()
+
+{
+
+return VTCExecCtrl.IsObsTC();
 
 }
 
@@ -424,15 +425,15 @@ void CCTCManager::EDROOM_SUB_Top_0::EDROOMBehaviour()
 					//Next State is Ready
 					edroomNextState = Ready;
 				 } 
-				//Evaluate Branch FwdTCObsMng
-				else if( GFwdTcObsMng() )
+				//Evaluate Branch FwdToObsMng
+				else if( GFwdToObsMng() )
 				{
 					//Send Asynchronous Message 
-					FFwdtoOBSmng();
+					FFwdToObsMng();
 
-					//Branch taken is HandleTC_FwdTCObsMng
+					//Branch taken is HandleTC_FwdToObsMng
 					edroomCurrentTrans.localId =
-						HandleTC_FwdTCObsMng;
+						HandleTC_FwdToObsMng;
 
 					//Next State is Ready
 					edroomNextState = Ready;
