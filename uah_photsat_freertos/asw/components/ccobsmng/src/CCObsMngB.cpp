@@ -79,7 +79,7 @@ void	CCObsMng::EDROOM_CTX_Top_0::FEndObservation()
 {
 
 // Take absolute time reference
-VNextTimeOut.GetTime
+VNextTimeOut.GetTime();
  
 pus_service129_end_observation();
 
@@ -97,7 +97,7 @@ void	CCObsMng::EDROOM_CTX_Top_0::FInit_Obs()
 	 
 	time.GetTime(); // Get current monotonic time
 	time += Pr_Time(0,100000); // Add X sec + Y microsec
-        VNextTimeout=time;
+        VNextTimeOut=time;
    //Program absolute timer 
    AttCtrlTimer.InformAt( time ); 
 }
@@ -112,7 +112,7 @@ void	CCObsMng::EDROOM_CTX_Top_0::FObsCtrl_exec()
 	
 		// Data access
 	
-	varSObsMng_TC.ExecTC;
+	varSObsMng_TC.ExecTC();
 
 }
 
@@ -126,8 +126,8 @@ void	CCObsMng::EDROOM_CTX_Top_0::FProgAttitudeCtrl()
 	 
 	//Timing Service useful methods
 	 
-	VNextTimeout += Pr_Time(0,100000); // Add X sec + Y microsec
-        time = VNextTimeout
+	VNextTimeOut += Pr_Time(0,100000); // Add X sec + Y microsec
+        time = VNextTimeOut;
    //Program absolute timer 
    AttCtrlTimer.InformAt( time ); 
 }
@@ -142,7 +142,7 @@ void	CCObsMng::EDROOM_CTX_Top_0::FProgTakeImage()
 	
 	//Timing Service useful methods
 	 
-         internal=CImageInterval;
+         interval=CImageInterval;
    //Program relative timer 
    ObservTimer.InformIn( interval ); 
 }
