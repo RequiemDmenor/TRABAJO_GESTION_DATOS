@@ -58,8 +58,6 @@ RM := rm -rf
 -include asw/components/cchk_fdirmng/src/subdir.mk
 -include asw/components/ccbkgtcexec/src/subdir.mk
 -include subdir.mk
--include objects.mk
-
 ifneq ($(MAKECMDGOALS),clean)
 ifneq ($(strip $(C++_DEPS)),)
 -include $(C++_DEPS)
@@ -103,10 +101,10 @@ all: main-build
 main-build: uah_photsat_freertos
 
 # Tool invocations
-uah_photsat_freertos: $(OBJS) $(USER_OBJS) makefile objects.mk $(OPTIONAL_TOOL_DEPS)
+uah_photsat_freertos: $(OBJS) $(USER_OBJS) makefile $(OPTIONAL_TOOL_DEPS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	g++  -o "uah_photsat_freertos" $(OBJS) $(USER_OBJS) $(LIBS)
+	g++  -o "uah_photsat_freertos" $(OBJS) $(USER_OBJS) $(LIBS) -lpthread
 	@echo 'Finished building target: $@'
 	@echo ' '
 
